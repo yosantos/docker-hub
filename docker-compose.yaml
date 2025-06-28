@@ -4,17 +4,15 @@ services:
     restart: always
     environment:
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
-      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain.pem
-      REGISTRY_HTTP_TLS_KEY: /certs/privkey.pem
     volumes:
       - ./data:/var/lib/registry
-      - ./certs:/certs
+
   nginx:
     image: nginx:latest
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
