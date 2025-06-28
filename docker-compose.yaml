@@ -3,6 +3,8 @@ services:
     image: registry:2
     container_name: registry
     restart: always
+     ports:
+      - "500:500"
     environment:
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
     volumes:
