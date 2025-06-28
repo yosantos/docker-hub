@@ -9,7 +9,6 @@ services:
     volumes:
       - ./data:/var/lib/registry
       - ./certs:/certs
-
   nginx:
     image: nginx:latest
     restart: always
