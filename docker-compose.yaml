@@ -1,26 +1,23 @@
 services:
-  nginx:
-    build: .
-    container_name: nginx
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./conf.d:/etc/nginx/conf.d
-      - ./auth:/auth
-      - ./ssl:/etc/nginx/ssl
   registry:
-    image: registry:latest
-    container_name: registry
+    image: registry:2
+    restart: always
+    environment:
+      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain.pem
+      REGISTRY_HTTP_TLS_KEY: /certs/privkey.pem
+    volumes:
+      - ./data:/var/lib/registry
+      - ./certs:/certs
+
+  nginx:
+    image: nginx:latest
     restart: always
     ports:
-      - "5000:5000"
+      - 80:80
+      - 443:443
     environment:
-      REGISTRY_AUTH: htpasswd
-      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
-      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      DOMAIN: ${DOMAIN}
     volumes:
-      - ./data:/data
-      - ./auth:/auth
+      - ./certs:/etc/nginx/certs:ro
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
