@@ -5,9 +5,11 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./conf.d:/etc/nginx/conf.d
       - ./auth:/auth
+      - ./ssl:/etc/nginx/ssl
   registry:
     image: registry:latest
     container_name: registry
