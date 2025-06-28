@@ -1,17 +1,23 @@
 services:
   registry:
-    image: registry:2
+    image: registry:latest
     container_name: registry
     restart: always
     ports:
       - "5000:5000"
     environment:
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
     volumes:
       - ./data:/var/lib/registry
+      - ./data:/data
+      - ./auth:/auth
 
   nginx:
-    image: nginx:latest
+    build: .
     container_name: nginx
     restart: always
     ports:
@@ -22,3 +28,4 @@ services:
     volumes:
       - ./certs:/etc/nginx/certs:ro
       - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
+      - ./auth:/auth
